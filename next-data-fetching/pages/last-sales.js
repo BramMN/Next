@@ -1,31 +1,46 @@
 import { useEffect, useState } from "react"
+import useSWR from "swr"
 
-function LastSalesPage() {
-  const [sales, setSales] = useState()
-  const [loading, setLoading] = useState(false)
+function LastSalesPage(props) {
+  const [sales, setSales] = useState(props.sales)
+  // const [loading, setLoading] = useState(false)
+
+  const { data, error } = useSWR(process.env.NEXT_PUBLIC_DB_FIREBASE + "sales.json", url => fetch(url).then(res => res.json()))
 
   useEffect(() => {
-    setLoading(true)
-    fetch(process.env.NEXT_PUBLIC_DB_FIREBASE + "sales.json")
-      .then(response => response.json())
-      .then(data => {
-        const transformedSales = []
+    if (data) {
+      const transformedSales = []
 
-        for (const key in data) {
-          transformedSales.push({ id: key, username: data[key].username, volume: data[key].volume })
-        }
+      for (const key in data) {
+        transformedSales.push({ id: key, username: data[key].username, volume: data[key].volume })
+      }
 
-        setSales(transformedSales)
-        setLoading(false)
-      })
-  }, [])
+      setSales(transformedSales)
+    }
+  }, [data])
 
-  if (loading) {
-    return <p>Loading...</p>
+  // useEffect(() => {
+  //   setLoading(true)
+  //   fetch(process.env.NEXT_PUBLIC_DB_FIREBASE + "sales.json")
+  //     .then(response => response.json())
+  //     .then(data => {
+  //       const transformedSales = []
+
+  //       for (const key in data) {
+  //         transformedSales.push({ id: key, username: data[key].username, volume: data[key].volume })
+  //       }
+
+  //       setSales(transformedSales)
+  //       setLoading(false)
+  //     })
+  // }, [])
+
+  if (error) {
+    return <p>Failed to load</p>
   }
 
-  if (!sales) {
-    return <p>No data yet</p>
+  if (!data && !sales) {
+    return <p>Loading...</p>
   }
 
   return (
@@ -37,6 +52,23 @@ function LastSalesPage() {
       ))}
     </ul>
   )
+}
+
+export async function getStaticProps() {
+  return fetch(process.env.NEXT_PUBLIC_DB_FIREBASE + "sales.json")
+    .then(response => response.json())
+    .then(data => {
+      const transformedSales = []
+
+      for (const key in data) {
+        transformedSales.push({ id: key, username: data[key].username, volume: data[key].volume })
+      }
+
+      return {
+        props: { sales: transformedSales },
+        //revalidate: 10,
+      }
+    })
 }
 
 export default LastSalesPage
