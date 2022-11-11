@@ -9,10 +9,10 @@ async function handler(req, res) {
       return
     }
 
-    const client = await MongoClient.connect(process.env.NEXT_PUBLIC_MONGO)
+    const client = await MongoClient.connect(process.env.NEXT_PUBLIC_MONGO + "/events?retryWrites=true&w=majority")
     const db = client.db()
 
-    await db.collection("emails").insertOne({ email: userEmail })
+    await db.collection("newsletter").insertOne({ email: userEmail })
 
     client.close()
 
