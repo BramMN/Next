@@ -22,7 +22,7 @@ async function handler(req, res) {
 
   const usersCollection = client.db().collection("users")
 
-  const user = await usersCollection.fineOne({ email: userEmail })
+  const user = await usersCollection.findOne({ email: userEmail })
 
   if (!user) {
     res.status(404).json({ message: "User not found." })
