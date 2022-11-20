@@ -5,20 +5,20 @@ import ProfileForm from "./profile-form"
 import classes from "./user-profile.module.css"
 
 function UserProfile() {
-  const { data: session, status } = useSession()
-  const loading = status === "loading"
+  // const { data: session, status } = useSession()
+  // const loading = status === "loading"
 
-  const router = useRouter()
+  // const router = useRouter()
 
-  useEffect(() => {
-    if (!session || status === "unauthenticated") {
-      router.push("/auth")
-    }
-  }, [router, session, status])
+  // useEffect(() => {
+  //   if (!session || status === "unauthenticated") {
+  //     router.push("/auth")
+  //   }
+  // }, [router, session, status])
 
-  if (!session || loading) {
-    return <p className={classes.profile}>Loading...</p>
-  }
+  // if (!session || loading) {
+  //   return <p className={classes.profile}>Loading...</p>
+  // }
 
   return (
     <section className={classes.profile}>
