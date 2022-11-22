@@ -4,7 +4,7 @@ async function handler(req, res) {
   if (req.method === "POST") {
     const data = req.body
 
-    const client = await MongoClient.connect(env.process.NEXT_PUBLIC_MONGODB)
+    const client = await MongoClient.connect(process.env.NEXT_PUBLIC_MONGODB)
 
     const db = client.db()
 
@@ -14,7 +14,6 @@ async function handler(req, res) {
 
     client.close()
 
-    console.log(result)
     res.status(201).json({ message: "Meetup inserted!" })
   }
 }
